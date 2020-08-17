@@ -1,0 +1,26 @@
+.container {
+    width: 900px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+
+.box_card {
+    padding: 5px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card_title {
+    margin-bottom: 60px;
+}
+
+.card_overview{
+    margin-bottom: 20px;
+}
+
+.card_text {
+    margin: 0;
+}

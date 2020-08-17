@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import movieApi from '../Service/fetchApiMovie'
+import movieApi from '../../Service/fetchApiMovie'
 
 export default class Reviews extends Component{
         state={
@@ -19,15 +19,19 @@ export default class Reviews extends Component{
           }
     }
       render(){
-    const {reviews,id } =this.state
+    const {reviews} =this.state
        return (
         <> 
-            { reviews.map(item => (
+            { reviews.length > 0 ? reviews.map(item => (
                 <>
                  <p> {item.author} </p> 
                  <p> {item.content} </p>
                  </>
-                 ))}
+                 ))
+                : <div>
+                      <p> We don't have any reviews for this movie</p>
+                  </div>
+                }
         </>
         )
       }

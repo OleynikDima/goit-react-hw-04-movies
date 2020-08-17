@@ -1,67 +1,57 @@
 import React,{Component} from "react"
 import movieApi from '../Service/fetchApiMovie'
 import FilmList from '../FilmListEditor'
+import SearchForm from './SearchForm'
+import qeuryString from 'query-string'
 
 
 
-//to do in url = 'qeury=movie'
 export default class MoviePage extends Component{
     state ={
         films:[],
-        searchQeury:'',
     }
 
-    handleChangeValue=(text)=>{
-        this.setState({searchQeury:text.target.value})
+componentDidMount(){
+    const {query} = qeuryString.parse(this.props.location.search)
+    if (query){
+        this.fetchFilmsSearch(query)
+        }else {
+            console.log('MoviePage query empty');
+        }
+}
+
+componentDidUpdate(prevProps,prevState){
+
+    const {query:prevQuery} = qeuryString.parse(prevProps.location.search)
+    const {query:nextQuery} = qeuryString.parse(this.props.location.search)
+
+    prevQuery !== nextQuery &&  this.fetchFilmsSearch(nextQuery);
+
+}
+
+handleOnSubmit = (searchText) =>{
+        this.props.history.push({
+                // pathname:this.props.location.pathname,
+                ...this.props.location,
+                search:`query=${searchText}`
+            });
+    };
+
+fetchFilmsSearch = (searchQuery) => {
+        movieApi.fetchGetSearchFilm(searchQuery)
+          .then(films => this.setState({films:films}))
     }
 
-    handleOnSubmit = (event) =>{
-        event.preventDefault();
-        const {searchQeury}=this.state
-        this.fetchFilmsSearch(searchQeury)
-    }
-
-    fetchFilmsSearch = () => {
-        const {searchQeury}=this.state
-        movieApi.fetchGetSearchFilm(searchQeury)
-          .then(films => this.setState(prevState => {
-              return {
-                  films:films
-              }
-          }))
-    }
-
-    // componentDidUpdate(prevProps,prevState){
-    //     const prevQuery = prevState.query;
-    //     const nextQuery = this.state.query;
-    //        if(prevQuery !== nextQuery){
-    //           console.log('fetch');
-    //        }
-    // }
-
-    render(){
-        const {searchQeury,films} =this.state
+render(){
+        const {films} =this.state
+        const location =  this.props.location 
         return (
             <>
-            <form >
-                <input
-                placeholder="search film"
-                onChange={this.handleChangeValue}
-                type="input"
-                value={searchQeury}
-                />
-                <button 
-                   onClick={this.handleOnSubmit}
-                    type="button">
-                    Ok
-                </button>
-            </form>
-            
 
+            <SearchForm onSubmit={this.handleOnSubmit}/>      
+              
+            { films.length > 0 && <FilmList onLocation={location} films = {films} />}
             
-              <ul>
-                  {films.length > 0 && <FilmList  films={films}/>}
-              </ul>
             </>
 
         )

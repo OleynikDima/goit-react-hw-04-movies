@@ -1,0 +1,8 @@
+.item {
+    list-style: none;
+    margin-bottom: 2px;
+}
+
+.link {
+    text-decoration:none;
+}

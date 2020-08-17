@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import movieApi from '../Service/fetchApiMovie'
-import { Switch, Route, Link } from 'react-router-dom'
-import Reviews from '../Reviews'
-import Cast from '../Cast'
+import { Route, Link } from 'react-router-dom'
+import Reviews from './Reviews'
+import Cast from './Cast'
+import MovieCard from './MovieCard'
+
 
 export default class MovieDetailsPage extends Component {
-// console.log(match);
+
 state={
     film:[],
     id:this.props.match.params.movieId,
@@ -16,43 +18,56 @@ componentDidMount(){
 }
 
 
-render(){
-const {film,id} = this.state
-const {match} = this.props
+handleGoBack=()=>{
+    console.log('back');
+    console.log(this.props.location.state);
+     if(this.props.location.state && this.props.location.state.from ){
+         this.props.history.push(this.props.location.state.from)
+     }
+}
 
+render(){
+const {film,id} = this.state;
+const {match} = this.props;
+const {state} = this.props.location;
+let stateFrom = state && state.from ? state.from: '/';
 return (
       <>
-        <button type="button"> go back</button>
-        <div>
-             <img src={film.imgUrl} alt={film.title}  width='400px' />
-             <div>
-                    <h2> {film.title} ({film.release_date}) </h2>
-                    <p> User Score:{film.user_score}</p>
-                    <div>
-                        <h3>Overview</h3>
-                        <p> {film.overview}</p>
-                    </div>
-                    <div>
-                        <h3>Genres</h3>
-                        <p>{film.genres}</p>
-                    </div>
-             </div>
-        </div>
+        <button type="button" onClick={this.handleGoBack}> go back</button>
+
+        <MovieCard title={film.title}
+            imgUrl={film.imgUrl}
+            release_date={film.release_date}
+            user_score={film.user_score}
+            overview={film.overview}
+            genres={film.genres}
+        />
 
         <hr/>
 
         <div>
             <p> Additional information </p>
             <ul>
-                <li> <Link id={id} to={`${match.url}/cast`} > Cast </Link> </li>
-                <li> <Link id={id} to={`${match.url}/reviews`} > Reviews</Link></li>
+                <li> <Link  
+                    to={{
+                    pathname:`${match.url}/cast`,
+                    state:{from:stateFrom}}} > Cast 
+                    </Link> </li>
+
+                <li> <Link 
+                    to={{pathname:`${match.url}/reviews`, 
+                    state:{from:stateFrom}}} > Reviews
+                    </Link></li>
             </ul>
-             
+            <hr/>
         </div>
-        <Switch>
-                 <Route  path={`${match.path}/cast`} component={Cast}/>
-                 <Route  path={`${match.path}/reviews`} component={Reviews}/>
-       </Switch>
+                 <Route  
+                 path={`${match.path}/cast`}  
+                 render={props => <Cast {...props} id={id}  /> } />
+
+                <Route  
+                 path={`${match.path}/reviews`}  
+                 render={props => <Reviews {...props} id={id}  /> } />
        </> 
        )
     }

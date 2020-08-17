@@ -1,0 +1,24 @@
+.list {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+.item {
+    width: 120px;
+    height: 240px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content:space-around;
+}
+
+.name {
+    margin: 0;
+    font-size: 14px;
+}
+
+.character {
+    margin: 0;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
